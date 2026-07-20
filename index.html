@@ -1,1 +1,153 @@
-đưqwdqwdqw
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VAREONIX ENTERTAINMENT</title>
+    <style>
+        /* Reset & full‑screen layout */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #1a0a2e, #0d0d1a);
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            padding: 1rem;
+        }
+
+        .container {
+            text-align: center;
+            padding: 3rem 2.5rem;
+            border-radius: 2.5rem;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.8);
+            max-width: 700px;
+            width: 100%;
+            transition: transform 0.2s ease;
+        }
+
+        .container:hover {
+            transform: scale(1.01);
+        }
+
+        /* Main title */
+        .title {
+            font-size: clamp(2.2rem, 8vw, 4.2rem);
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #f5e56b, #f9d423, #ffb347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(249, 212, 35, 0.25);
+            margin-bottom: 1.2rem;
+            line-height: 1.2;
+        }
+
+        .title .star {
+            display: inline-block;
+            animation: pulse-star 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulse-star {
+            0%   { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+
+        /* Subtext / player label */
+        .player-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 1.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 1.2rem;
+            font-weight: 300;
+        }
+
+        /* Custom audio player */
+        audio {
+            width: 100%;
+            max-width: 480px;
+            border-radius: 60px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.4rem;
+            outline: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            display: block;
+            margin: 0 auto;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background: rgba(20, 10, 40, 0.85);
+            border-radius: 60px;
+        }
+
+        audio::-webkit-media-controls-play-button {
+            background-color: #f9d423;
+            border-radius: 50%;
+        }
+
+        /* Small note */
+        .credit {
+            margin-top: 2rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+
+        .credit a {
+            color: rgba(255, 255, 255, 0.25);
+            text-decoration: none;
+            border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+        }
+
+        .credit a:hover {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Fallback for very small screens */
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem 1.2rem;
+                border-radius: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Title with star -->
+        <h1 class="title">
+            <span class="star">⭐</span> VAREONIX ENTERTAINMENT
+        </h1>
+
+        <div class="player-label">✦ Now Playing ✦</div>
+
+        <!-- Audio player – dùng file nhạc local trong thư mục music -->
+        <audio controls autoplay>
+            <source src="music/FALL%20IN%20LOVE.mp3" type="audio/mpeg" />
+            Trình duyệt của bạn không hỗ trợ thẻ audio.
+        </audio>
+
+        <div class="credit">
+            🎵 FALL IN LOVE &bull; 
+            <a href="#" target="_blank">VAREONIX</a>
+        </div>
+    </div>
+
+</body>
+</html>
