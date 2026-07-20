@@ -1,178 +1,782 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VAREONIX ENTERTAINMENT</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at center, #1a0a2e, #0d0d1a);
-            font-family: 'Segoe UI', 'Arial', sans-serif;
-            padding: 1rem;
-        }
-
-        .container {
-            text-align: center;
-            padding: 3rem 2.5rem;
-            border-radius: 2.5rem;
-            background: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            box-shadow: 0 25px 50px -10px rgba(0, 0, 0, 0.8);
-            max-width: 700px;
-            width: 100%;
-        }
-
-        .title {
-            font-size: clamp(2.2rem, 8vw, 4.2rem);
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #f5e56b, #f9d423, #ffb347);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 30px rgba(249, 212, 35, 0.25);
-            margin-bottom: 1.2rem;
-            line-height: 1.2;
-        }
-
-        .star {
-            display: inline-block;
-            animation: pulse 2s infinite alternate ease-in-out;
-        }
-
-        @keyframes pulse {
-            0%   { transform: scale(1); }
-            100% { transform: scale(1.2); }
-        }
-
-        .player-label {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-bottom: 1.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 1.2rem;
-            font-weight: 300;
-        }
-
-        audio {
-            width: 100%;
-            max-width: 480px;
-            border-radius: 60px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.4rem;
-            outline: none;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-            display: block;
-            margin: 0 auto;
-        }
-
-        audio::-webkit-media-controls-panel {
-            background: rgba(20, 10, 40, 0.85);
-            border-radius: 60px;
-        }
-
-        audio::-webkit-media-controls-play-button {
-            background-color: #f9d423;
-            border-radius: 50%;
-        }
-
-        .credit {
-            margin-top: 2rem;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.2);
-            letter-spacing: 1px;
-        }
-
-        /* Thông báo lỗi – hiện rõ khi không tìm thấy file */
-        #error-msg {
-            margin-top: 1.5rem;
-            padding: 0.8rem 1rem;
-            background: rgba(255, 70, 70, 0.15);
-            border-left: 4px solid #ff4d4d;
-            color: #ffb3b3;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            display: none;
-            text-align: left;
-        }
-
-        #error-msg.show {
-            display: block;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 2rem 1.2rem;
-                border-radius: 1.8rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VAREONIX ENTERTAINMENT</title>
+  <meta name="description" content="Official Music Website of VAREONIX ENTERTAINMENT" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
+  <style>
+    /* ----- RESET & BASE ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #0b0a12;
+      color: #f0edff;
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    /* ----- ANIMATED AURORA BACKGROUND ----- */
+    .aurora {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(72, 0, 255, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(255, 0, 200, 0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 80%, rgba(0, 255, 200, 0.08) 0%, transparent 50%);
+      background-blend-mode: overlay;
+      pointer-events: none;
+    }
+    .aurora::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.01) 0px, rgba(255, 255, 255, 0.01) 2px, transparent 2px, transparent 8px);
+      animation: auroraShift 18s linear infinite alternate;
+    }
+    @keyframes auroraShift {
+      0% { transform: translateX(-5%) scale(1.2) rotate(0deg); opacity: 0.3; }
+      100% { transform: translateX(5%) scale(1.4) rotate(3deg); opacity: 0.6; }
+    }
+    /* ----- GLASS CONTAINER ----- */
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    }
+    /* ----- LAYOUT ----- */
+    .wrapper {
+      position: relative;
+      z-index: 2;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem 3rem;
+    }
+    /* ----- NAVIGATION (TABS) ----- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem 1.5rem;
+      padding: 0.8rem 2rem;
+      margin-bottom: 2.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 4rem;
+    }
+    .brand {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #f5e56b, #f9d423, #ffb347);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .brand span { font-size: 1.8rem; }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+      list-style: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .nav-links a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      transition: color 0.3s, transform 0.2s;
+      position: relative;
+      cursor: pointer;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #f9d423, #ffb347);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: #fff; transform: translateY(-1px); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.active { color: #fff; }
+    .nav-links a.active::after { width: 100%; }
+    /* ----- TAB CONTENT ----- */
+    .tab-content {
+      display: none;
+      animation: fadeUp 0.5s ease;
+    }
+    .tab-content.active { display: block; }
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(16px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    section { margin-bottom: 2rem; }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.8rem;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .section-title span {
+      background: linear-gradient(135deg, #f5e56b, #f9d423);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    /* ----- HERO (Home tab) ----- */
+    .hero {
+      text-align: center;
+      padding: 3.5rem 2rem 3rem;
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 3rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.8rem, 9vw, 5.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #f5e56b 0%, #f9d423 40%, #ffb347 80%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.6rem;
+    }
+    .hero p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+    /* ----- ARTISTS GRID ----- */
+    .artists-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.8rem;
+      margin-top: 0.5rem;
+    }
+    .artist-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 2rem;
+      padding: 1.6rem 0.8rem;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: default;
+    }
+    .artist-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 20px 40px -12px rgba(249, 212, 35, 0.15);
+      border-color: rgba(249, 212, 35, 0.2);
+    }
+    .artist-card .avatar { font-size: 3.2rem; line-height: 1; margin-bottom: 0.4rem; }
+    .artist-card .name { font-weight: 600; font-size: 1.1rem; }
+    .artist-card .role { font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); letter-spacing: 1px; }
+    /* ----- PLAYER (shared) ----- */
+    .player-wrapper {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 2.5rem;
+      padding: 2rem 2rem 1.8rem;
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8);
+      margin-top: 0.5rem;
+    }
+    .player-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+    @media (max-width: 800px) {
+      .player-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+    .cover {
+      aspect-ratio: 1/1;
+      max-width: 200px;
+      width: 100%;
+      margin: 0 auto;
+      border-radius: 1.8rem;
+      background: radial-gradient(circle at 30% 30%, #2a1a4a, #0d0b1a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: transform 0.4s;
+    }
+    .cover:hover { transform: scale(1.02); }
+    .cover .wave-bars {
+      display: flex;
+      gap: 4px;
+      align-items: flex-end;
+      height: 50px;
+      opacity: 0.6;
+    }
+    .cover .wave-bars span {
+      display: block;
+      width: 6px;
+      background: linear-gradient(180deg, #f9d423, #ffb347);
+      border-radius: 4px;
+      animation: waveAnim 1.2s ease-in-out infinite alternate;
+    }
+    .cover .wave-bars span:nth-child(1) { height: 20px; animation-delay: 0s; }
+    .cover .wave-bars span:nth-child(2) { height: 40px; animation-delay: 0.2s; }
+    .cover .wave-bars span:nth-child(3) { height: 30px; animation-delay: 0.4s; }
+    .cover .wave-bars span:nth-child(4) { height: 50px; animation-delay: 0.1s; }
+    .cover .wave-bars span:nth-child(5) { height: 25px; animation-delay: 0.3s; }
+    @keyframes waveAnim {
+      0% { transform: scaleY(0.4); }
+      100% { transform: scaleY(1); }
+    }
+    .player-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .player-controls .song-title { font-weight: 600; font-size: 1.2rem; text-align: center; }
+    .player-controls .song-artist { font-size: 0.9rem; color: rgba(255, 255, 255, 0.4); text-align: center; }
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .controls-row button {
+      background: rgba(255, 255, 255, 0.06);
+      border: none;
+      color: #fff;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .controls-row button:hover { background: rgba(255, 255, 255, 0.12); transform: scale(1.05); }
+    .controls-row button:active { transform: scale(0.94); }
+    .controls-row .play-btn {
+      width: 60px;
+      height: 60px;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #f9d423, #f5a623);
+      color: #0b0a12;
+      box-shadow: 0 8px 24px rgba(249, 212, 35, 0.25);
+      border: none;
+    }
+    .controls-row .play-btn:hover { box-shadow: 0 8px 32px rgba(249, 212, 35, 0.4); transform: scale(1.06); }
+    .progress-area {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.4);
+      font-variant-numeric: tabular-nums;
+    }
+    .progress-area input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+      transition: background 0.2s;
+    }
+    .progress-area input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #f9d423;
+      cursor: pointer;
+      box-shadow: 0 0 16px rgba(249, 212, 35, 0.3);
+      transition: 0.15s;
+    }
+    .progress-area input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    .progress-area input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #f9d423;
+      cursor: pointer;
+      border: none;
+    }
+    .volume-area {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      justify-content: flex-end;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .volume-area input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 80px;
+      height: 3px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      outline: none;
+    }
+    .volume-area input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #f9d423;
+      cursor: pointer;
+    }
+    .volume-area input[type="range"]::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #f9d423;
+      cursor: pointer;
+      border: none;
+    }
+    .extra-actions {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: center;
+      margin-top: 0.2rem;
+    }
+    .extra-actions button {
+      background: transparent;
+      border: none;
+      color: rgba(255, 255, 255, 0.3);
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0.3rem 0.6rem;
+      border-radius: 2rem;
+      transition: color 0.2s, background 0.2s;
+    }
+    .extra-actions button:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
+    .extra-actions .active { color: #f9d423; }
+    /* LYRICS */
+    .lyrics-panel {
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 2rem;
+      padding: 2rem 2rem;
+      margin-top: 2rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.3);
+      font-style: italic;
+      letter-spacing: 0.5px;
+      transition: all 0.4s;
+    }
+    .lyrics-panel .coming-soon {
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+    .lyrics-panel .coming-soon span { opacity: 0.5; }
+    /* ABOUT */
+    .about-text {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.4);
+      font-weight: 300;
+      line-height: 1.8;
+    }
+    .footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.15);
+      letter-spacing: 1px;
+    }
+    /* ----- RESPONSIVE ----- */
+    @media (max-width: 640px) {
+      .wrapper { padding: 0.8rem 1rem 2rem; }
+      nav {
+        flex-direction: column;
+        align-items: stretch;
+        border-radius: 2rem;
+        padding: 1rem 1.2rem;
+      }
+      .nav-links { justify-content: center; gap: 1rem; font-size: 0.85rem; }
+      .hero h1 { font-size: 2.4rem; }
+      .player-grid { grid-template-columns: 1fr; gap: 1.2rem; }
+      .cover { max-width: 160px; }
+      .controls-row .play-btn { width: 52px; height: 52px; font-size: 1.5rem; }
+      .volume-area input[type="range"] { width: 60px; }
+    }
+  </style>
 </head>
 <body>
+  <div class="aurora"></div>
 
-    <div class="container">
-        <h1 class="title">
-            <span class="star">⭐</span> VAREONIX ENTERTAINMENT
-        </h1>
+  <div class="wrapper">
+    <!-- NAV (TABS) -->
+    <nav>
+      <div class="brand"><span>⭐</span> VAREONIX</div>
+      <ul class="nav-links">
+        <li><a data-tab="home">Home</a></li>
+        <li><a data-tab="release">Latest Release</a></li>
+        <li><a data-tab="artists">Artists</a></li>
+        <li><a data-tab="downloadmusic">Download Music</a></li>
+        <li><a data-tab="about">About</a></li>
+      </ul>
+    </nav>
 
-        <div class="player-label">✦ Now Playing ✦</div>
-
-        <!-- Audio với đường dẫn đúng tên file -->
-        <audio id="audioPlayer" controls autoplay>
-            <source src="music/FALL_IN_LOVE.mp3" type="audio/mpeg" />
-            Trình duyệt của bạn không hỗ trợ thẻ audio.
-        </audio>
-
-        <!-- Vùng hiển thị lỗi -->
-        <div id="error-msg">
-            ⚠️ <strong>Không tìm thấy file nhạc.</strong><br />
-            Hãy đảm bảo thư mục <code>music</code> nằm cùng cấp với <code>index.html</code> và bên trong có file <code>FALL_IN_LOVE.mp3</code>.
+    <!-- TAB: HOME -->
+    <div id="tab-home" class="tab-content active">
+      <section>
+        <div class="hero">
+          <h1>⭐ VAREONIX ENTERTAINMENT</h1>
+          <p>Experience Music Beyond Reality.</p>
         </div>
-
-        <div class="credit">🎵 FALL IN LOVE &bull; VAREONIX</div>
+      </section>
     </div>
 
-    <script>
-        (function() {
-            const audio = document.getElementById('audioPlayer');
-            const errorBox = document.getElementById('error-msg');
+    <!-- TAB: LATEST RELEASE (includes player) -->
+    <div id="tab-release" class="tab-content">
+      <section>
+        <div class="section-title"><span>✦</span> Latest Release</div>
+        <div class="player-wrapper">
+          <div class="player-grid">
+            <div class="cover">
+              <div class="wave-bars">
+                <span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <div class="player-controls">
+              <div class="song-title">FALL IN LOVE（坠入爱河）</div>
+              <div class="song-artist">VAELYR × NOREVYX × SYRAEN</div>
+              <div class="controls-row">
+                <button id="prevBtn" aria-label="Previous">⏮</button>
+                <button id="playBtn" class="play-btn" aria-label="Play">▶</button>
+                <button id="nextBtn" aria-label="Next">⏭</button>
+              </div>
+              <div class="progress-area">
+                <span id="currentTime">0:00</span>
+                <input type="range" id="seekBar" value="0" min="0" max="100" step="0.1" />
+                <span id="duration">0:00</span>
+              </div>
+              <div class="extra-actions">
+                <button id="loopBtn" aria-label="Loop">🔁</button>
+                <button id="downloadBtn" aria-label="Download">⬇</button>
+                <button id="muteBtn" aria-label="Mute">🔊</button>
+              </div>
+            </div>
+            <div class="volume-area">
+              <span id="volumeIcon">🔊</span>
+              <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.8" />
+            </div>
+          </div>
+          <!-- Lyrics -->
+          <div class="lyrics-panel" id="lyricsPanel">
+            <div class="coming-soon">
+              <span>🎵</span> Coming Soon <span>🎵</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
 
-            // Khi có lỗi (không load được file)
-            audio.addEventListener('error', function(e) {
-                errorBox.classList.add('show');
-                console.error('Lỗi audio:', audio.error);
-                // Nếu lỗi là 404, có thể thử gợi ý kiểm tra đường dẫn
-                if (audio.error && audio.error.code === 4) {
-                    // MEDIA_ERR_SRC_NOT_SUPPORTED – thường do đường dẫn sai
-                }
-            });
+    <!-- TAB: ARTISTS -->
+    <div id="tab-artists" class="tab-content">
+      <section>
+        <div class="section-title"><span>✦</span> Artists</div>
+        <div class="artists-grid">
+          <div class="artist-card"><div class="avatar">🌙</div><div class="name">VAELYR</div><div class="role">Vocal / Producer</div></div>
+          <div class="artist-card"><div class="avatar">⚡</div><div class="name">NOREVYX</div><div class="role">Synth / Guitar</div></div>
+          <div class="artist-card"><div class="avatar">🌀</div><div class="name">SYRAEN</div><div class="role">Drums / FX</div></div>
+        </div>
+      </section>
+    </div>
 
-            // Nếu file load thành công, ẩn thông báo lỗi (nếu đang hiện)
-            audio.addEventListener('canplaythrough', function() {
-                errorBox.classList.remove('show');
-            });
+    <!-- TAB: DOWNLOAD MUSIC -->
+    <div id="tab-downloadmusic" class="tab-content">
+      <section>
+        <div class="section-title"><span>⬇</span> Download Music</div>
+        <div style="text-align:center; padding: 2rem 0;">
+          <p style="color:rgba(255,255,255,0.5); margin-bottom: 2rem;">Download the latest track from VAREONIX.</p>
+          <button id="downloadBtnAlt" style="background:linear-gradient(135deg, #f9d423, #f5a623); border:none; color:#0b0a12; padding:1rem 3rem; border-radius:3rem; font-size:1.2rem; font-weight:600; cursor:pointer; transition:transform 0.2s, box-shadow 0.2s; box-shadow:0 8px 24px rgba(249,212,35,0.3);">⬇ Download FALL IN LOVE</button>
+        </div>
+      </section>
+    </div>
 
-            // Nếu autoplay bị chặn, người dùng vẫn bấm play được – không sao
-            // Thêm dòng log để biết
-            if (audio.autoplay) {
-                console.log('🎵 Đang cố gắng tự động phát nhạc.');
-            }
-        })();
-    </script>
+    <!-- TAB: ABOUT -->
+    <div id="tab-about" class="tab-content">
+      <section>
+        <div class="section-title"><span>✦</span> About</div>
+        <div class="about-text">
+          VAREONIX ENTERTAINMENT is a futuristic music collective blending electronic, synthwave, and cinematic soundscapes.
+          We push the boundaries of reality through immersive audio experiences.
+        </div>
+      </section>
+    </div>
 
+    <footer class="footer">
+      ⭐ VAREONIX ENTERTAINMENT · 2026 · All rights reserved.
+    </footer>
+  </div>
+
+  <!-- AUDIO ELEMENT -->
+  <audio id="audio" preload="metadata" src="/music/FALL_IN_LOVE.mp3"></audio>
+
+  <script>
+    (function() {
+      'use strict';
+
+      // ----- ROUTING: sync tab with URL path -----
+      const tabMap = {
+        '/': 'home',
+        '/home': 'home',
+        '/release': 'release',
+        '/artists': 'artists',
+        '/downloadmusic': 'downloadmusic',
+        '/about': 'about'
+      };
+
+      function getTabFromPath() {
+        const path = window.location.pathname.toLowerCase();
+        // Nếu path bắt đầu bằng /music thì không thay đổi tab (giữ nguyên)
+        if (path.startsWith('/music/')) return null;
+        return tabMap[path] || 'home';
+      }
+
+      function setActiveTab(tabId) {
+        // Cập nhật nav
+        document.querySelectorAll('.nav-links a').forEach(link => {
+          link.classList.toggle('active', link.dataset.tab === tabId);
+        });
+        // Cập nhật content
+        document.querySelectorAll('.tab-content').forEach(el => {
+          el.classList.toggle('active', el.id === 'tab-' + tabId);
+        });
+      }
+
+      // Xử lý click trên nav: cập nhật URL và tab
+      document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const tab = this.dataset.tab;
+          // Cập nhật URL (pushState) không reload
+          const newPath = tab === 'home' ? '/' : '/' + tab;
+          if (window.location.pathname !== newPath) {
+            window.history.pushState({ tab }, '', newPath);
+          }
+          setActiveTab(tab);
+        });
+      });
+
+      // Lắng nghe sự kiện popstate (khi người dùng dùng nút back/forward)
+      window.addEventListener('popstate', function() {
+        const tab = getTabFromPath();
+        if (tab) setActiveTab(tab);
+      });
+
+      // Khởi tạo tab dựa trên URL hiện tại
+      const initialTab = getTabFromPath();
+      if (initialTab) setActiveTab(initialTab);
+
+      // ----- AUDIO PLAYER LOGIC -----
+      const audio = document.getElementById('audio');
+      const playBtn = document.getElementById('playBtn');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const seekBar = document.getElementById('seekBar');
+      const currentTimeSpan = document.getElementById('currentTime');
+      const durationSpan = document.getElementById('duration');
+      const volumeSlider = document.getElementById('volumeSlider');
+      const volumeIcon = document.getElementById('volumeIcon');
+      const muteBtn = document.getElementById('muteBtn');
+      const loopBtn = document.getElementById('loopBtn');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const downloadBtnAlt = document.getElementById('downloadBtnAlt');
+      const lyricsPanel = document.getElementById('lyricsPanel');
+
+      let isPlaying = false;
+      let isLooping = false;
+      let isMuted = false;
+      let previousVolume = 0.8;
+
+      function formatTime(seconds) {
+        if (isNaN(seconds) || seconds === Infinity) return '0:00';
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return m + ':' + (s < 10 ? '0' : '') + s;
+      }
+
+      function updatePlayButton() {
+        playBtn.textContent = isPlaying ? '⏸' : '▶';
+      }
+
+      audio.addEventListener('loadedmetadata', function() {
+        durationSpan.textContent = formatTime(audio.duration);
+        seekBar.max = audio.duration;
+      });
+
+      audio.addEventListener('timeupdate', function() {
+        if (!isNaN(audio.duration)) {
+          seekBar.value = audio.currentTime;
+          currentTimeSpan.textContent = formatTime(audio.currentTime);
+        }
+      });
+
+      seekBar.addEventListener('input', function() {
+        audio.currentTime = parseFloat(seekBar.value);
+      });
+
+      function togglePlay() {
+        if (audio.paused) {
+          audio.play().catch(e => console.warn('Autoplay blocked:', e));
+        } else {
+          audio.pause();
+        }
+        isPlaying = !audio.paused;
+        updatePlayButton();
+      }
+
+      playBtn.addEventListener('click', togglePlay);
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT') return;
+        if (e.code === 'Space') {
+          e.preventDefault();
+          togglePlay();
+        }
+        if (e.code === 'ArrowRight') {
+          audio.currentTime = Math.min(audio.currentTime + 5, audio.duration || 0);
+        }
+        if (e.code === 'ArrowLeft') {
+          audio.currentTime = Math.max(audio.currentTime - 5, 0);
+        }
+        if (e.code === 'KeyM') {
+          toggleMute();
+        }
+      });
+
+      volumeSlider.addEventListener('input', function() {
+        audio.volume = parseFloat(volumeSlider.value);
+        isMuted = audio.volume === 0;
+        updateVolumeIcon();
+        if (audio.volume > 0) previousVolume = audio.volume;
+      });
+
+      function toggleMute() {
+        if (audio.volume === 0) {
+          audio.volume = previousVolume || 0.5;
+          volumeSlider.value = audio.volume;
+          isMuted = false;
+        } else {
+          previousVolume = audio.volume;
+          audio.volume = 0;
+          volumeSlider.value = 0;
+          isMuted = true;
+        }
+        updateVolumeIcon();
+      }
+
+      muteBtn.addEventListener('click', toggleMute);
+
+      function updateVolumeIcon() {
+        if (audio.volume === 0) {
+          volumeIcon.textContent = '🔇';
+        } else if (audio.volume < 0.3) {
+          volumeIcon.textContent = '🔈';
+        } else if (audio.volume < 0.7) {
+          volumeIcon.textContent = '🔉';
+        } else {
+          volumeIcon.textContent = '🔊';
+        }
+      }
+
+      loopBtn.addEventListener('click', function() {
+        isLooping = !isLooping;
+        audio.loop = isLooping;
+        loopBtn.classList.toggle('active', isLooping);
+        loopBtn.style.color = isLooping ? '#f9d423' : 'rgba(255,255,255,0.3)';
+      });
+
+      function downloadFile() {
+        const a = document.createElement('a');
+        a.href = '/music/FALL_IN_LOVE.mp3';
+        a.download = 'FALL_IN_LOVE.mp3';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+      downloadBtn.addEventListener('click', downloadFile);
+      if (downloadBtnAlt) downloadBtnAlt.addEventListener('click', downloadFile);
+
+      prevBtn.addEventListener('click', function() {
+        audio.currentTime = Math.max(0, audio.currentTime - 10);
+      });
+      nextBtn.addEventListener('click', function() {
+        audio.currentTime = Math.min(audio.currentTime + 10, audio.duration || 0);
+      });
+
+      audio.addEventListener('error', function(e) {
+        console.warn('Audio load error:', audio.error);
+        lyricsPanel.innerHTML = `
+          <div style="color: rgba(255,100,100,0.6);">
+            ⚠️ Could not load audio file.<br>
+            <span style="font-size:0.8rem;">Make sure /music/FALL_IN_LOVE.mp3 exists.</span>
+          </div>
+        `;
+      });
+
+      audio.addEventListener('canplaythrough', function() {
+        lyricsPanel.innerHTML = `
+          <div class="coming-soon">
+            <span>🎵</span> Coming Soon <span>🎵</span>
+          </div>
+        `;
+      });
+
+      audio.load();
+      audio.volume = parseFloat(volumeSlider.value);
+      updateVolumeIcon();
+
+      console.log('🎵 VAREONIX ENTERTAINMENT · Player ready.');
+    })();
+  </script>
 </body>
 </html>
