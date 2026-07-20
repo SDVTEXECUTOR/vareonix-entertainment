@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VAREONIX ENTERTAINMENT</title>
     <style>
-        /* Reset & full‑screen layout */
         * {
             margin: 0;
             padding: 0;
@@ -40,7 +39,6 @@
             transform: scale(1.01);
         }
 
-        /* Main title */
         .title {
             font-size: clamp(2.2rem, 8vw, 4.2rem);
             font-weight: 800;
@@ -64,7 +62,6 @@
             100% { transform: scale(1.2); }
         }
 
-        /* Subtext / player label */
         .player-label {
             color: rgba(255, 255, 255, 0.5);
             font-size: 0.9rem;
@@ -76,7 +73,6 @@
             font-weight: 300;
         }
 
-        /* Custom audio player */
         audio {
             width: 100%;
             max-width: 480px;
@@ -99,7 +95,6 @@
             border-radius: 50%;
         }
 
-        /* Small note */
         .credit {
             margin-top: 2rem;
             font-size: 0.75rem;
@@ -118,7 +113,22 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Fallback for very small screens */
+        /* Thông báo lỗi */
+        #error-msg {
+            margin-top: 1.2rem;
+            padding: 0.8rem;
+            background: rgba(255, 70, 70, 0.15);
+            border-left: 3px solid #ff4d4d;
+            color: #ffb3b3;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        #error-msg.show {
+            display: block;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 2rem 1.2rem;
@@ -130,24 +140,82 @@
 <body>
 
     <div class="container">
-        <!-- Title with star -->
         <h1 class="title">
             <span class="star">⭐</span> VAREONIX ENTERTAINMENT
         </h1>
 
         <div class="player-label">✦ Now Playing ✦</div>
 
-        <!-- Audio player – dùng file nhạc local trong thư mục music -->
-        <audio controls autoplay>
+        <!-- Audio player -->
+        <audio id="audioPlayer" controls autoplay>
             <source src="music/FALL%20IN%20LOVE.mp3" type="audio/mpeg" />
             Trình duyệt của bạn không hỗ trợ thẻ audio.
         </audio>
+
+        <!-- Khu vực hiển thị lỗi -->
+        <div id="error-msg">⚠️ Không thể tải file nhạc. Kiểm tra lại đường dẫn hoặc tên file.</div>
 
         <div class="credit">
             🎵 FALL IN LOVE &bull; 
             <a href="#" target="_blank">VAREONIX</a>
         </div>
     </div>
+
+    <script>
+        (function() {
+            const audio = document.getElementById('audioPlayer');
+            const errorDiv = document.getElementById('error-msg');
+
+            // Hàm hiển thị lỗi
+            function showError(message) {
+                errorDiv.textContent = '⚠️ ' + message;
+                errorDiv.classList.add('show');
+                console.error('Lỗi phát nhạc:', message);
+            }
+
+            // Bắt lỗi khi không tải được file
+            audio.addEventListener('error', function(e) {
+                // Lấy mã lỗi
+                const errorCode = audio.error ? audio.error.code : -1;
+                let msg = 'Không thể tải file nhạc. ';
+                if (errorCode === 1) msg += 'Trình duyệt không hỗ trợ định dạng.';
+                else if (errorCode === 2) msg += 'Không tìm thấy file (kiểm tra đường dẫn).';
+                else if (errorCode === 3) msg += 'Lỗi kết nối hoặc file bị hỏng.';
+                else if (errorCode === 4) msg += 'File không hợp lệ.';
+                else msg += 'Mã lỗi: ' + errorCode;
+                showError(msg);
+            });
+
+            // Nếu autoplay bị chặn, hướng dẫn người dùng bấm play
+            audio.addEventListener('play', function() {
+                errorDiv.classList.remove('show');
+            });
+
+            // Kiểm tra nếu file thực sự tồn tại (thử fetch để debug)
+            // (chỉ chạy trên trình duyệt hiện đại, không ảnh hưởng chính)
+            fetch('music/FALL%20IN%20LOVE.mp3', { method: 'HEAD' })
+                .then(response => {
+                    if (!response.ok) {
+                        showError('File nhạc không tồn tại (HTTP ' + response.status + '). Kiểm tra lại tên file và thư mục.');
+                    } else {
+                        console.log('✅ File nhạc tồn tại.');
+                    }
+                })
+                .catch(err => {
+                    // Có thể do CORS hoặc không truy cập được - nhưng vẫn để audio thử tải
+                    console.warn('Không thể kiểm tra file (có thể do CORS):', err);
+                });
+
+            // Nếu sau 5 giây mà không có lỗi nhưng không phát (có thể do autoplay bị chặn)
+            // thì thông báo nhẹ nhàng (không làm phiền)
+            setTimeout(() => {
+                if (audio.paused && !audio.error) {
+                    // Không hiển thị lỗi, chỉ console
+                    console.info('⏸️ Autoplay bị chặn. Người dùng cần bấm play thủ công.');
+                }
+            }, 5000);
+        })();
+    </script>
 
 </body>
 </html>
